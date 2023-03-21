@@ -30,7 +30,7 @@ SECRET_KEY = 'django-insecure-hdi=_h+)qnb_(-z=032csy1nr4%=cen#b*004^x=i-7qu=s3(p
 DEBUG = True
 DEBUG = False
 
-ALLOWED_HOSTS = ['127.0.0.1', 'gaisa.onrender.com',]
+ALLOWED_HOSTS = ['127.0.0.1', 'gaisa-2lcr.onrender.com',]
 
 # Application definition
 
