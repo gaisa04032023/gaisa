@@ -962,10 +962,17 @@ class Migration(migrations.Migration):
     operations = [
         migrations.RunPython(initialization),
         migrations.RunSQL("""CREATE VIEW view_catalog AS
-                            SELECT catalog.id, catalog.category_id, category.title AS category, catalog.title,catalog.details, catalog.price, catalog.quantity, catalog.unit, 
-                            (SELECT SUM(quantity) FROM sale WHERE sale.catalog_id = catalog.id) AS sale_quantity,
-                            IIF ((catalog.quantity - (SELECT SUM(quantity) FROM sale WHERE sale.catalog_id = catalog.id)) IS NULL, catalog.quantity, (catalog.quantity - (SELECT SUM(quantity) FROM sale WHERE sale.catalog_id = catalog.id)) ) AS available
-                            FROM catalog LEFT JOIN category ON catalog.category_id = category.id;"""),
+SELECT catalog.id, catalog.category_id, category.title AS category, catalog.title,catalog.details, catalog.price, catalog.quantity, catalog.unit, 
+(SELECT SUM(quantity) FROM sale WHERE sale.catalog_id = catalog.id) AS sale_quantity,
+CASE 
+WHEN (catalog.quantity - (SELECT SUM(quantity) FROM sale WHERE sale.catalog_id = catalog.id)) IS NULL 
+THEN catalog.quantity 
+ELSE (catalog.quantity - (SELECT SUM(quantity) FROM sale WHERE sale.catalog_id = catalog.id)) 
+END
+AS available
+FROM catalog LEFT JOIN category ON catalog.category_id = category.id
+WHERE catalog.quantity > 0
+ORDER BY catalog.title,  catalog.title"""),
         #migrations.RunSQL("""CREATE VIEW view_sale AS
         #                SELECT sale.id, username, saleday, catalog_id, view_catalog.category, view_catalog.title, info, code, sale.price, sale.quantity, sale.price*sale.quantity AS total, user_id, rating, sale.details,
         #                (SELECT strftime('%d.%m.%Y',deliveryday) || ' - ' || movement FROM delivery WHERE sale_id = sale.id AND deliveryday = (SELECT MAX(deliveryday) AS Expr1 FROM delivery AS S WHERE  (sale_id = sale.id) )) AS final
