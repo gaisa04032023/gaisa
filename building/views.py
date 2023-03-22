@@ -689,8 +689,8 @@ def catalog_details(request, id):
         # Товар с каталога
         catalog = ViewCatalog.objects.get(id=id)
         # Отзывы на данный товар
-        reviews = ViewSale.objects.filter(catalog_id=id).exclude(rating=None)
-        return render(request, "catalog/details.html", {"catalog": catalog, "reviews": reviews,})
+        #reviews = ViewSale.objects.filter(catalog_id=id).exclude(rating=None)
+        return render(request, "catalog/details.html", {"catalog": catalog,})
     except Catalog.DoesNotExist:
         return HttpResponseNotFound("<h2>Catalog not found</h2>")
 

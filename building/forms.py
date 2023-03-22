@@ -201,7 +201,7 @@ class SaleForm(forms.ModelForm):
         }
     def __init__(self, *args, **kwargs):
         super(SaleForm, self).__init__(*args, **kwargs)
-        available = ViewCatalog.objects.filter(available__gt=50).only('id').all()
+        available = ViewCatalog.objects.filter(available__gt=0).only('id').all()
         self.fields['catalog'].queryset = Catalog.objects.filter(id__in = available)
     # Метод-валидатор для поля numb
     def clean_quantity(self):
