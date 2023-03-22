@@ -579,33 +579,18 @@ def catalog_index(request, coming_id):
 def catalog_list(request):
     try:
         # Только доступный товар
+        catalog = Catalog.objects.order_by('title').order_by('category')
         catalog = ViewCatalog.objects.filter(available__gt=0).order_by('title').order_by('category')
-        # Подчситать количество товара в корзине доступны записи только текущего пользователя
-        # Текущий пользователь
-        _user_id = request.user.id
-        #basket_count = Basket.objects.filter(user_id=_user_id).count()
-        #print(basket_count)        
-        if request.method == "POST":
-            # Выделить id товара
-            catalog_id = request.POST.dict().get("catalog_id")
-            #print("catalog_id ", catalog_id)
-            price = request.POST.dict().get("price")
-            #print("price ", price)
-            user = request.POST.dict().get("user")
-            #print("user ", user)
-            ## Отправить товар в корзину
-            #basket = Basket()
-            #basket.catalog_id = catalog_id
-            #basket.price = float(int(price.replace(",00","")))
-            ##basket.price = price
-            #basket.user_id = user
-            #basket.save()
-            #message = _('Item added to basket')
-            #basket_count = Basket.objects.filter(user_id=_user_id).count()
-            return render(request, "catalog/list.html", {"catalog": catalog, "mess": message, "basket_count": basket_count })
-        else:
-            #return render(request, "catalog/list.html", {"catalog": catalog, "basket_count": basket_count })
-            return render(request, "catalog/list.html", {"catalog": catalog })
+#        catalog = Catalog.objects.raw("""
+#SELECT catalog.id, catalog.category_id, category.title AS category, catalog.title,catalog.details, catalog.price, catalog.quantity, catalog.unit, 
+#(SELECT SUM(quantity) FROM sale WHERE sale.catalog_id = catalog.id) AS sale_quantity,
+#IIF ((catalog.quantity - (SELECT SUM(quantity) FROM sale WHERE sale.catalog_id = catalog.id)) IS NULL, catalog.quantity, (catalog.quantity - (SELECT SUM(quantity) FROM sale WHERE sale.catalog_id = catalog.id)) ) AS available
+#FROM catalog LEFT JOIN category ON catalog.category_id = category.id
+#WHERE catalog.quantity > %d
+#ORDER BY catalog.title,  catalog.title
+#""",  params=[0])
+        print(catalog)        
+        return render(request, "catalog/list.html", {"catalog": catalog })           
     except Exception as exception:
         print(exception)
         return HttpResponse(exception)
