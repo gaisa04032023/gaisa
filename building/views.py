@@ -935,7 +935,7 @@ def news_delete(request, id):
         return HttpResponseNotFound("<h2>News not found</h2>")
 
 # Просмотр страницы read.html для просмотра объекта.
-@login_required
+#@login_required
 def news_read(request, id):
     try:
         news = News.objects.get(id=id) 

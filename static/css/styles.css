@@ -244,6 +244,10 @@ pre {
 	margin-top: 20px;    
 	margin-bottom: 20px; 
 	padding: 20px;  
+	font-size: x-large;	
+}
+.part0 p {
+	
 }
 
 .part1 {
@@ -254,12 +258,14 @@ pre {
     margin-top: 20px;    
 	margin-bottom: 20px; 
 	padding: 20px;  
+	font-size: x-large;	
 }
 
 .part1 p{
 	color: MediumOrchid;		 
 	padding-top: 10px;
 	padding-bottom: 10px;
+	font-size: x-large;	
 }
 
 .outer {
@@ -279,6 +285,7 @@ pre {
     margin-top: 20px;    
 	margin-bottom: 20px; 
 	padding: 20px;  
+	font-size: x-large;	
 }
 
 .part2 h4{
@@ -303,6 +310,7 @@ pre {
     margin-top: 20px;    
 	margin-bottom: 20px; 
 	padding: 20px;  
+	font-size: x-large;	
 }  
 .part3 h4{
 	color: AntiqueWhite;		 
@@ -321,6 +329,7 @@ pre {
     margin-top: 20px;    
 	margin-bottom: 20px; 
 	padding: 20px;  
+	font-size: x-large;	
 }
 
 .part4 h2{
@@ -331,7 +340,8 @@ pre {
 .part4 p{
 	color: Red;
 	text-align: center;	
-	font-weight: bold;  	
+	font-weight: bold;  
+	font-size: x-large;			
 }
 
 .reviews {
@@ -341,6 +351,7 @@ pre {
     margin-top: 20px;    
 	margin-bottom: 20px; 
 	padding: 20px;  
+	font-size: x-large;	
 }
 
 .person {
@@ -349,7 +360,8 @@ pre {
 	width: 100%;
     margin-top: 20px;    
 	margin-bottom: 20px; 
-	padding: 20px;  
+	padding: 20px; 
+	font-size: x-large;		
 }
 
 
