@@ -18,6 +18,10 @@ import datetime
 
 import time
 
+import csv
+import xlwt
+from io import BytesIO
+
 # Подключение моделей
 from django.contrib.auth.models import User, Group
 
@@ -26,7 +30,7 @@ from django.db.models import Q
 
 from .models import Construction, Investor, Binding, Investments, Coming, Category, Catalog, ViewCatalog, Outgo, Sale, News
 # Подключение форм
-from .forms import ConstructionForm, InvestorForm, BindingForm, InvestmentsForm, ComingForm, CategoryForm, CatalogForm, OutgoForm, SaleForm, NewsForm
+from .forms import ConstructionForm, InvestorForm, BindingForm, InvestmentsForm, ComingForm, CategoryForm, CatalogForm, OutgoForm, SaleForm, NewsForm, SignUpForm
 
 from django.contrib.auth.models import AnonymousUser
 
@@ -942,6 +946,87 @@ def news_read(request, id):
         return render(request, "news/read.html", {"news": news})
     except News.DoesNotExist:
         return HttpResponseNotFound("<h2>News not found</h2>")
+
+# Экспорт в Excel
+def export_excel(request): 
+    # Create a HttpResponse object and set its content_type header value to Microsoft excel.
+    response = HttpResponse(content_type='application/vnd.ms-excel') 
+    # Set HTTP response Content-Disposition header value. Tell web server client the attached file name is students.xls.
+    response['Content-Disposition'] = 'attachment;filename=catalog.xls' 
+    # Create a new Workbook file.
+    work_book = xlwt.Workbook(encoding = 'utf-8') 
+    # Create a new worksheet in the above workbook.
+    work_sheet = work_book.add_sheet(u'Catalog Info')
+    # Maintain some worksheet styles，style_head_row, style_data_row, style_green, style_red
+    # This style will be applied to worksheet head row.
+    style_head_row = xlwt.easyxf("""    
+        align:
+          wrap off,
+          vert center,
+          horiz center;
+        borders:
+          left THIN,
+          right THIN,
+          top THIN,
+          bottom THIN;
+        font:
+          name Arial,
+          colour_index white,
+          bold on,
+          height 0xA0;
+        pattern:
+          pattern solid,
+          fore-colour 0x19;
+        """
+    )
+    # Define worksheet data row style. 
+    style_data_row = xlwt.easyxf("""
+        align:
+          wrap on,
+          vert center,
+          horiz left;
+        font:
+          name Arial,
+          bold off,
+          height 0XA0;
+        borders:
+          left THIN,
+          right THIN,
+          top THIN,
+          bottom THIN;
+        """
+    )
+    # Set data row date string format.
+    #style_data_row.num_format_str = 'dd/mm/yyyy'
+    # Define a green color style.
+    style_green = xlwt.easyxf(" pattern: fore-colour 0x11, pattern solid;")
+    # Define a red color style.
+    style_red = xlwt.easyxf(" pattern: fore-colour 0x0A, pattern solid;")
+    # Generate worksheet head row data.
+    work_sheet.write(0,0, 'category', style_head_row) 
+    work_sheet.write(0,1, 'title', style_head_row) 
+    work_sheet.write(0,2, 'price', style_head_row) 
+    work_sheet.write(0,3, 'available', style_head_row) 
+    work_sheet.write(0,4, 'unit', style_head_row) 
+    # Generate worksheet data row data.
+    row = 1 
+    for catalog in ViewCatalog.objects.filter(available__gt=0).order_by('title').order_by('category'):
+        work_sheet.write(row,0, catalog.category, style_data_row)
+        work_sheet.write(row,1, catalog.title, style_data_row)
+        work_sheet.write(row,2, '{:.0f}'.format(catalog.price), style_data_row)
+        work_sheet.write(row,3, catalog.available, style_data_row)
+        work_sheet.write(row,4, catalog.unit, style_data_row)
+        row=row + 1 
+    # Create a StringIO object.
+    output = BytesIO()
+    
+    # Save the workbook data to the above StringIO object.
+    work_book.save(output)
+    # Reposition to the beginning of the StringIO object.
+    output.seek(0)
+    # Write the StringIO object's value to HTTP response to send the excel file to the web server client.
+    response.write(output.getvalue()) 
+    return response
 
 # Регистрационная форма 
 def signup(request):

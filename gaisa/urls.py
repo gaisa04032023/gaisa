@@ -27,6 +27,7 @@ urlpatterns = [
     path('index/', views.index, name='index'),
     path('contact/', views.contact, name='contact'),
     path('i18n/', include('django.conf.urls.i18n')),
+    path('export/excel/', views.export_excel, name='export_excel'),     
 
     path('construction/index/', views.construction_index, name='construction_index'),
     path('construction/list/', views.construction_list, name='construction_list'),

@@ -5,10 +5,9 @@
 {% block header %}{% endblock header %}
 {% block content %}
 <h2>{% trans "Catalog list" %}</h2>
-
-
-
-
+<div class="row">
+	<a href="{% url 'export_excel' %}">Экспорт в Excel</a>
+</div>	
 {% if catalog.count > 0 %}
 <div class="row">
 	<table id="myTable" class="table-manager" style="width:100%">
